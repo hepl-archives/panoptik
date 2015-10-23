@@ -1,0 +1,14 @@
+{
+  "name": "panoptik",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A personal homepage thing.",
+  "author": "leny <info@flatland.be>",
+  "main": "bin/server.js",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "jade": "^1.11.0",
+    "zouti": "^0.3.1"
+  }
+}
