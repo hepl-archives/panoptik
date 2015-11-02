@@ -8,6 +8,6 @@
 exports.init = function( oApp ) {
 
     oApp.get( "/dev", require( "../controllers/pages/dev.js" ) );
-    // oApp.all( "/", require( "../controllers/pages/home.js" ) );
+    oApp.all( "/", require( "../controllers/pages/home.js" ) );
 
 };
