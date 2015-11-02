@@ -5,6 +5,8 @@
 
 "use strict";
 
+var User = require( "../../core/sequelize.js" ).models.User
+
 var _log,
     _json,
     _check;
@@ -33,13 +35,18 @@ exports.json = _json = {
 };
 
 exports.checkConnect = _check = function( oRequest, oResponse, fNext ) {
-    var iUserID = +oRequest.headers[ "app_id" ],
-        sUserToken = oRequest.headers[ "app_token" ];
+    var iUserID = +oRequest.headers[ "app-id" ],
+        sUserToken = oRequest.headers[ "app-token" ];
 
     // check db
-    if( iUserID !== 1 && sUserToken !== "test" ) {
-        return _json.error( oRequest, oResponse, new Error( "INVALID_TOKEN" ), 401 );
-    }
-
-    fNext();
+    User
+        .findById( iUserID )
+        .then( function( oUser ) {
+            if( oUser && oUser.token === sUserToken ) {
+                oResponse.locals.user = oUser;
+                fNext();
+            } else {
+                return _json.error( oRequest, oResponse, new Error( "INVALID_TOKEN" ), 401 );
+            }
+        } );
 };
