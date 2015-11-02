@@ -18,6 +18,8 @@ Voici la procédure & les commandes pour faire tourner le projet *via* [docker](
 
 Ça devrait déjà être le cas, mais assurez-vous d'avoir [VirtualBox](https://www.virtualbox.org/) sur votre machine.
 
+**Note:** certains utilisateurs de windows pourraient avoir des messages d'avertissement un peu cryptiques concernant des fonctionnalités nommées `VT-X/AMD-v` : il s'agit de fonctions systèmes propres à la bonne exécution des machines virtuelles. Pour des raisons que j'ignore, certains constructeurs activent (ou pas) par défaut ces fonctions. Si vous rencontrez ces messages, vous pourrez trouver de l'aide [ici](http://www.howtogeek.com/213795/how-to-enable-intel-vt-x-in-your-computers-bios-or-uefi-firmware/), ou encore sur l'[ensemble des internets](https://www.google.be/search?q=virtualbox+windows+enable+vt-x+amd-v).
+
 ### 1. Installation des dépendances
 
 1. Le traditionnel `npm install` à l'intérieur du dossier installera tout ce dont on a besoin.
@@ -31,7 +33,7 @@ Voici la procédure & les commandes pour faire tourner le projet *via* [docker](
 
 1. Créez une machine de développement avec la commande `docker-machine create --driver virtualbox dev` (ça peut prendre un peu de temps).
 1. Vous pouvez vérifier l'existence de votre machine avec la commande `docker-machine ls`. Le nom de notre machine est "*dev*". Si son statut n'est pas "running", démarrez-la avec la commande `docker-machine start dev`.
-1. Il nous faut ensuite lier notre machine avec notre terminal courrant, en tapant les commandes suivantes : `docker-machine env dev`, suivi par une commande qui vous est suggérée et qui ressemble à `eval "$(docker-machine env dev)"` sur mac, et `eval "$(C:\Programe Files\Docker Toolbox\docker-machine.exe)"` sur windows (note: selon le shell que vous utilisez sur windows, vous devrez peut-être utiliser les [commandes alternatives indiquées dans la doc](https://docs.docker.com/machine/reference/env/)).
+1. Il nous faut ensuite lier notre machine avec notre terminal courrant, en tapant les commandes suivantes : `docker-machine env dev`, suivi par une commande qui vous est suggérée et qui ressemble à `eval "$(docker-machine env dev)"` sur mac, et `eval "$(C:\Program Files\Docker Toolbox\docker-machine.exe)"` sur windows (note: selon le shell que vous utilisez sur windows, vous devrez peut-être utiliser les [commandes alternatives indiquées dans la doc](https://docs.docker.com/machine/reference/env/)).
 1. Utilisez la commande `docker-machine ip dev` pour connaître à tout moment l'ip de notre machine.
 
 ### 4. docker-compose
