@@ -34,4 +34,4 @@ require( "../routes/widgets.js" ).init( oApp );
 require( "../routes/pages.js" ).init( oApp );
 
 // listen
-oApp.listen( 12345 );
+oApp.listen( process.env.APP_PORT );
