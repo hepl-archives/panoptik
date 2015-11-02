@@ -5,8 +5,18 @@
 
 "use strict";
 
-console.log( "launching server..." );
+var zouti = require( "zouti" );
 
+zouti.clearConsole();
+zouti.log( "launching...", "panoptik:server", zouti.YELLOW );
+
+zouti.bench( "panoptik:server" );
+
+// load & configure all
+require( "./core/sequelize.js" );
 require( "./core/express.js" );
 
-console.log( "...server launched." );
+// sync models with db
+require( "./core/sync.js" );
+
+zouti.bench( "panoptik:server" );
