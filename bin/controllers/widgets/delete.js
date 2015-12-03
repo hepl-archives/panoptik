@@ -6,31 +6,25 @@
 "use strict";
 
 var jsonMiddlewares = require( "../../core/express/middlewares.js" ).json,
-    Widget = require( "../../core/sequelize.js" ).models.Widget;
+    Widget = require( "../../models/widget.js" );
 
 // [delete] - /widgets/:id
 module.exports = function( oRequest, oResponse ) {
 
-    var oPOST = oRequest.body,
-        iWidgetID = +oRequest.params.id;
+    var iWidgetID = +oRequest.params.id;
 
-    Widget
-        .findById( iWidgetID )
-        .catch( function( oError ) {
+    Widget.getById( iWidgetID, function( oError, oWidget ) {
+        if( oError ) {
             return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
-        } )
-        .then( function( oWidget ) {
-            if( oWidget ) {
-                if( oWidget.user_id !== oResponse.locals.user.id ) {
-                    return jsonMiddlewares.error( oRequest, oResponse, new Error( "FORBIDDEN_WIDGET" ), 401 );
-                }
-
-                oWidget
-                    .destroy()
-                    .then( function() {
-                        return jsonMiddlewares.send( oRequest, oResponse, true );
-                    } );
+        }
+        if( oWidget.userId !== oResponse.locals.user.id ) {
+            return jsonMiddlewares.error( oRequest, oResponse, new Error( "FORBIDDEN_WIDGET" ), 401 );
+        }
+        oWidget.delete( function( oError ) {
+            if( oError ) {
+                return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
             }
+            jsonMiddlewares.send( oRequest, oResponse, true );
         } );
-
+    } );
 };

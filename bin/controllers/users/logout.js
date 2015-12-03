@@ -5,9 +5,7 @@
 
 "use strict";
 
-var jsonMiddlewares = require( "../../core/express/middlewares.js" ).json,
-    zouti = require( "zouti" ),
-    User = require( "../../core/sequelize.js" ).models.User;
+var jsonMiddlewares = require( "../../core/express/middlewares.js" ).json;
 
 module.exports = function( oRequest, oResponse ) {
 

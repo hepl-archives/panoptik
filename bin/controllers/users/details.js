@@ -6,7 +6,7 @@
 "use strict";
 
 var jsonMiddlewares = require( "../../core/express/middlewares.js" ).json,
-    User = require( "../../core/sequelize.js" ).models.User;
+    User = require( "../../models/user.js" );
 
 // [GET] - /users/:id
 module.exports = function( oRequest, oResponse ) {
@@ -17,20 +17,15 @@ module.exports = function( oRequest, oResponse ) {
         return jsonMiddlewares.error( oRequest, oResponse, new Error( "NO_VALID_ID" ), 400 );
     }
 
-    User
-        .findById( iUserID )
-        .catch( function( oError ) {
+    User.getById( iUserID, function( oError, oUser ) {
+        if( oError ) {
             return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
-        } )
-        .then( function( oUser ) {
-            if( !oUser ) {
-                return jsonMiddlewares.error( oRequest, oResponse, new Error( "UNKNOWN_USER" ), 404 );
-            }
-            jsonMiddlewares.send( oRequest, oResponse, {
-                "id": oUser.id,
-                "pseudo": oUser.pseudo,
-                "avatar": oUser.avatar
-            } );
+        }
+        jsonMiddlewares.send( oRequest, oResponse, {
+            "id": oUser.id,
+            "pseudo": oUser.pseudo,
+            "avatar": oUser.avatar
         } );
+    } );
 
 };

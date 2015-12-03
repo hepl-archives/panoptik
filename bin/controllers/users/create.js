@@ -6,37 +6,27 @@
 "use strict";
 
 var jsonMiddlewares = require( "../../core/express/middlewares.js" ).json,
-    User = require( "../../core/sequelize.js" ).models.User;
+    User = require( "../../models/user.js" );
 
 // [POST] - /users
 module.exports = function( oRequest, oResponse ) {
 
     var oPOST = oRequest.body,
-        oUser = User.build();
+        oUser = new User();
 
     oUser.login = ( oPOST.login || "" ).trim();
     oUser.password = ( oPOST.password || "" ).trim();
     oUser.pseudo = ( oPOST.pseudo || "" ).trim();
 
-    oUser
-        .validate()
-        .then( function( oValidationReport ) {
-            if( oValidationReport ) {
-                return jsonMiddlewares.error( oRequest, oResponse, oValidationReport.errors, 400 );
-            }
-
-            oUser
-                .save()
-                .catch( function( oError ) {
-                    return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
-                } )
-                .then( function( oSavedUser ) {
-                    oSavedUser && jsonMiddlewares.send( oRequest, oResponse, {
-                        "id": oSavedUser.id,
-                        "pseudo": oSavedUser.pseudo,
-                        "avatar": oSavedUser.avatar
-                    } );
-                } );
+    oUser.save( function( oError ) {
+        if( oError ) {
+            return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
+        }
+        jsonMiddlewares.send( oRequest, oResponse, {
+            "id": oUser.id,
+            "pseudo": oUser.pseudo,
+            "avatar": oUser.avatar
         } );
+    } );
 
 };

@@ -6,43 +6,30 @@
 "use strict";
 
 var jsonMiddlewares = require( "../../core/express/middlewares.js" ).json,
-    Widget = require( "../../core/sequelize.js" ).models.Widget;
+    Widget = require( "../../models/widget.js" );
 
-// [GET] - /widgets/:id
+// [POST] - /widgets
 module.exports = function( oRequest, oResponse ) {
 
     var oPOST = oRequest.body,
-        oWidget = Widget.build();
+        oWidget = new Widget();
 
     oWidget.column = oPOST.column;
     oWidget.row = oPOST.row;
     oWidget.type = oPOST.type;
     oWidget.data = JSON.parse( oPOST.data ) || {}; // TODO: probable changes here.
+    oWidget.userId = oResponse.locals.user.id;
 
-    oWidget
-        .validate()
-        .then( function( oValidationReport ) {
-            if( oValidationReport ) {
-                return jsonMiddlewares.error( oRequest, oResponse, oValidationReport.errors, 400 );
-            }
-
-            oWidget
-                .save()
-                .catch( function( oError ) {
-                    return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
-                } )
-                .then( function( oSavedWidget ) {
-                    if( oSavedWidget ) {
-                        oSavedWidget.setUser( oResponse.locals.user );
-                        jsonMiddlewares.send( oRequest, oResponse, {
-                            "id": oSavedWidget.id,
-                            "type": oSavedWidget.type,
-                            "column": oSavedWidget.column,
-                            "row": oSavedWidget.row,
-                            "data": oSavedWidget.data
-                        } );
-                    }
-                } );
+    oWidget.save( function( oError, oSavedWidget ) {
+        if( oError ) {
+            return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
+        }
+        jsonMiddlewares.send( oRequest, oResponse, {
+            "id": oSavedWidget.id,
+            "type": oSavedWidget.type,
+            "column": oSavedWidget.column,
+            "row": oSavedWidget.row,
+            "data": oSavedWidget.data
         } );
-
+    } );
 };

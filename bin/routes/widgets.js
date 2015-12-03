@@ -22,6 +22,6 @@ exports.init = function( oApp ) {
     oApp.put( "/widgets/:id", fCheckConnect, require( "../controllers/widgets/update.js" ) );
 
     // delete widget (require connexion)
-    oApp[ "delete" ]( "/widgets/:id", fCheckConnect, require( "../controllers/widgets/delete.js" ) );
+    oApp.delete( "/widgets/:id", fCheckConnect, require( "../controllers/widgets/delete.js" ) );
 
 };

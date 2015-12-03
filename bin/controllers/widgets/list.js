@@ -6,34 +6,25 @@
 "use strict";
 
 var jsonMiddlewares = require( "../../core/express/middlewares.js" ).json,
-    Widget = require( "../../core/sequelize.js" ).models.Widget;
+    Widget = require( "../../models/widget.js" );
 
 // [GET] - /widgets
 module.exports = function( oRequest, oResponse ) {
 
-    Widget
-        .findAll( {
-            "where": {
-                "user_id": oResponse.locals.user.id
-            },
-            "order": [
-                [ "column", "ASC" ],
-                [ "row", "ASC" ]
-            ]
-        } )
-        .catch( function( oError ) {
+    Widget.getAll( {
+        "userId": oResponse.locals.user.id
+    }, function( oError, aWidgets ) {
+        if( oError ) {
             return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
-        } )
-        .then( function( aWidgets ) {
-            jsonMiddlewares.send( oRequest, oResponse, aWidgets.map( function( oWidget ) {
-                return {
-                    "id": oWidget.id,
-                    "type": oWidget.type,
-                    "column": oWidget.column,
-                    "row": oWidget.row,
-                    "data": oWidget.data
-                };
-            } ) );
-        } );
-
+        }
+        jsonMiddlewares.send( oRequest, oResponse, aWidgets.map( function( oWidget ) {
+            return {
+                "id": oWidget.id,
+                "type": oWidget.type,
+                "column": oWidget.column,
+                "row": oWidget.row,
+                "data": oWidget.data
+            };
+        } ) );
+    } );
 };

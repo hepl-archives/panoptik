@@ -13,10 +13,6 @@ zouti.log( "launching...", "panoptik:server", zouti.YELLOW );
 zouti.bench( "panoptik:server" );
 
 // load & configure all
-require( "./core/sequelize.js" );
 require( "./core/express.js" );
-
-// sync models with db
-require( "./core/sync.js" );
 
 zouti.bench( "panoptik:server" );

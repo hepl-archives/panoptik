@@ -30,8 +30,8 @@ oApp.set( "views", __dirname + "/../views" );
 
 // configure routes
 require( "../routes/users.js" ).init( oApp );
-require( "../routes/widgets.js" ).init( oApp );
+// require( "../routes/widgets.js" ).init( oApp );
 require( "../routes/pages.js" ).init( oApp );
 
 // listen
-oApp.listen( process.env.APP_PORT );
+oApp.listen( 12345 );

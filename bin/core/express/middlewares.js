@@ -5,14 +5,13 @@
 
 "use strict";
 
-var User = require( "../../core/sequelize.js" ).models.User
+var User = require( "../../models/user.js" );
 
-var _log,
-    _json,
-    _check;
+var _json;
 
-exports.log = _log = function( oRequest, oResponse, fNext ) {
+exports.log = function( oRequest, oResponse, fNext ) {
     var sDate = ( new Date() ).toTimeString();
+
     console.log( "(" + sDate + ") - [" + oRequest.method + "] - " + oRequest.url );
     fNext();
 };
@@ -34,19 +33,17 @@ exports.json = _json = {
     }
 };
 
-exports.checkConnect = _check = function( oRequest, oResponse, fNext ) {
+exports.checkConnect = function( oRequest, oResponse, fNext ) {
     var iUserID = +oRequest.headers[ "app-id" ],
         sUserToken = oRequest.headers[ "app-token" ];
 
     // check db
-    User
-        .findById( iUserID )
-        .then( function( oUser ) {
-            if( oUser && oUser.token === sUserToken ) {
-                oResponse.locals.user = oUser;
-                fNext();
-            } else {
-                return _json.error( oRequest, oResponse, new Error( "INVALID_TOKEN" ), 401 );
-            }
-        } );
+    User.getById( iUserID, function( oError, oUser ) {
+        if( oUser && oUser.token === sUserToken ) {
+            oResponse.locals.user = oUser;
+            fNext();
+        } else {
+            return _json.error( oRequest, oResponse, oError || new Error( "INVALID_TOKEN" ), oError ? 404 : 401 );
+        }
+    } );
 };

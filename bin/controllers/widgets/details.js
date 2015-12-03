@@ -6,7 +6,7 @@
 "use strict";
 
 var jsonMiddlewares = require( "../../core/express/middlewares.js" ).json,
-    Widget = require( "../../core/sequelize.js" ).models.Widget;
+    Widget = require( "../../models/widget.js" );
 
 // [GET] - /widgets/:id
 module.exports = function( oRequest, oResponse ) {
@@ -17,24 +17,19 @@ module.exports = function( oRequest, oResponse ) {
         return jsonMiddlewares.error( oRequest, oResponse, new Error( "NO_VALID_ID" ), 400 );
     }
 
-    Widget
-        .findById( iWidgetID )
-        .catch( function( oError ) {
+    Widget.getById( iWidgetID, function( oError, oWidget ) {
+        if( oError ) {
             return jsonMiddlewares.error( oRequest, oResponse, oError, 500 );
-        } )
-        .then( function( oWidget ) {
-            if( oWidget ) {
-                if( oWidget.user_id !== oResponse.locals.user.id ) {
-                    return jsonMiddlewares.error( oRequest, oResponse, new Error( "FORBIDDEN_WIDGET" ), 401 );
-                }
-                jsonMiddlewares.send( oRequest, oResponse, {
-                    "id": oWidget.id,
-                    "type": oWidget.type,
-                    "column": oWidget.column,
-                    "row": oWidget.row,
-                    "data": oWidget.data
-                } );
-            }
+        }
+        if( oWidget.userId !== oResponse.locals.user.id ) {
+            return jsonMiddlewares.error( oRequest, oResponse, new Error( "FORBIDDEN_WIDGET" ), 401 );
+        }
+        jsonMiddlewares.send( oRequest, oResponse, {
+            "id": oWidget.id,
+            "type": oWidget.type,
+            "column": oWidget.column,
+            "row": oWidget.row,
+            "data": oWidget.data
         } );
-
+    } );
 };
