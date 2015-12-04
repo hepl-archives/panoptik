@@ -7,7 +7,7 @@
 
 var zouti = require( "zouti" );
 
-zouti.clearConsole();
+// zouti.clearConsole();
 zouti.log( "launching...", "panoptik:server", zouti.YELLOW );
 
 zouti.bench( "panoptik:server" );
